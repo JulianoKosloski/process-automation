@@ -1,3 +1,6 @@
+import win32com.client as win32
+import re
+
 """ 
 SmartMail
 
@@ -7,9 +10,66 @@ Author: Juliano Kosloski - Automation Developer
 Created: 11/08/2022 by Juliano Kosloski
 """
 
-import win32com.client as win32
-
 class SmartMail:
+    
+    outlook = win32.Dispatch("Outlook.Application").GetNamespace("MAPI")
+    inbox = outlook.GetDefaultFolder(6)
+    messages = inbox.Items
+    
+    """
+    Index of Outlook items:
+    3 Deleted Items
+    4 Outbox 
+    5 Sent Items
+    6 Inbox
+    16 Drafts
+    """
+    
+    def _getJuridicoEmail() -> None:
+        """
+        Finds the two latest emails on the inbox and download its attachments
+        
+        """
+        message = SmartMail.messages.GetFirst()
+        pattern1 = "dsadaIDAS.*"
+        pattern2 = "ORdasdasdsaq JUdsdasewS.*"
+        r1 = re.compile(pattern1)
+        r2 = re.compile(pattern2)
+        
+        while True:
+            
+            text = message.subject
+            
+            if (r1.match(text)):
+                attachments = message.Attachments# return the first item in attachments
+                attachment = attachments.Item(1)
+                # the name of attachment file      
+                attachment_name1 = str(attachment)
+                print("Found a file: " + attachment_name1)
+                attachment.SaveASFile('C:/PATH/' + attachment_name1)
+                # -----
+                attachment = attachments.Item(2)
+                attachment_name1a = str(attachment)
+                print("Found a file: " + attachment_name1a)
+                attachment.SaveASFile('C:/PATH/' + attachment_name1a)
+            
+            if (r2.match(text)):
+                attachments = message.Attachments# return the first item in attachments
+                attachment = attachments.Item(1)
+                # the name of attachment file      
+                attachment_name2 = str(attachment)
+                print("Found a file: " + attachment_name2)
+                attachment.SaveASFile('C:/PATH/' + attachment_name2)
+                # -----
+                attachment = attachments.Item(2)
+                attachment_name2a = str(attachment)
+                print("Found a file: " + attachment_name2a)
+                attachment.SaveASFile('C:/PATH/' + attachment_name2a)
+                break
+            
+            message = SmartMail.messages.GetNext()
+                
+        return attachment_name1, attachment_name1a, attachment_name2, attachment_name2a
     
     def sendMail(mailTo : str = "", subject : str = "", body = "", attach : bool = False, filePath : str = "") -> None:
         """

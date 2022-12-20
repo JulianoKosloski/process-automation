@@ -1,7 +1,7 @@
 """
-SYS5
+Risco
 
-Módulo que permite manipular arquivos .csv relacionados a relatórios ???
+Módulo que permite manipular arquivos .csv relacionados a relatórios de risco
 
 Author: Juliano Kosloski - Automation Developer
 Created: 23/08/2022 by Juliano Kosloski
@@ -14,7 +14,7 @@ import re
 import datetime
 import time
 
-class SYS5:
+class Risco:
     
     def _getCurrentDate():
         """
@@ -23,28 +23,27 @@ class SYS5:
         
         cd = datetime.date.today().strftime("%d%m%Y")
         return cd
-    
-    
+       
     def getFiles() -> tuple:
         """
         Finds the paths to the downloaded files and returns a tuple with the file paths and the file name
         """
         
-        cd = SYS5._getCurrentDate() #gets current date
+        cd = Risco._getCurrentDate() #gets current date
         date = cd[:2] + "_" + cd[2:4] + "_" + cd[4:] + "_" #puts the date in the right format for regex
         
-        pattern = r"^filenamem_[{}].*[.csv]".format(date) #creates a regex to search the dir
+        pattern = r"^psadeqewq_[{}].*[.csv]".format(date) #creates a regex to search the dir
         rx = re.compile(pattern) 
 
-        for file in os.listdir(path = "C:/Users/???/Downloads"): 
+        for file in os.listdir(path = "C:/PATH/"): 
             
             if rx.match(file):
                 
                 file_name = file
                 print("Um arquivo foi encontrado: " + file_name)
                 
-        pathRisco = "C:/Users/???/Downloads/Arquivo.csv"
-        pathRiscoDetalhes = "C:/Users/???/Downloads/{}".format(file_name)
+        pathRisco = "C:/PATH/"
+        pathRiscoDetalhes = "C:/PATH/{}".format(file_name)
         
         return pathRisco, pathRiscoDetalhes, file_name
      
@@ -71,13 +70,13 @@ class SYS5:
         """
 
         #this function solves the issue of losing data types when doing direct csv to xlsx conversion
-        
-        pyautogui.hotkey("alt", "a") #goes to file options in excel (PT-BR)
-        time.sleep(2)
+        time.sleep(10)
+        pyautogui.hotkey("alt", "a", interval = 2.0) #goes to file options in excel (PT-BR)
+        time.sleep(10)
         pyautogui.press("a") #opens save as option
-        time.sleep(2)
+        time.sleep(30)
         pyautogui.hotkey("y", "4") #opens file type selection
-        time.sleep(2)
+        time.sleep(10)
         pyautogui.press("up", presses = 15) #navigates to .xlsx
         pyautogui.press("enter") #confirms the selection
         
@@ -86,7 +85,7 @@ class SYS5:
         
         print("File saved as .xlsx...")
         newPath = path[:-4] + ".xlsx"
-        time.sleep(4)
+        time.sleep(20)
         return newPath
     
     def closeExcel() -> None:
@@ -96,7 +95,7 @@ class SYS5:
         
         print("Closing Excel...")
         os.system("TASKKILL /F /IM EXCEL.exe")
-        time.sleep(3)
+        time.sleep(8)
         
     def prepFiles(riscoArq:str, riscoDet:str) -> tuple:
         """
@@ -110,21 +109,21 @@ class SYS5:
         
         wb = openpyxl.load_workbook(riscoDet) 
         ws = wb.worksheets[0]
-        print("Deleting column G = '?XSDS'")
-        ws.delete_cols(7, 1) #deletes column G
+        print("Deleting column G = 'Inad.' and Ativ. Prob.")
+        ws.delete_cols(7, 2) #deletes column G, H
         wb.save(riscoDet)
         
         row_count = 0
 
         for i in range(ws.max_row + 1, 1, -1):   
-            if str(ws.cell(row = i, column = 14).value) == "texto" or str(ws.cell(row = i, column = 14).value) == "outro texto":
+            if str(ws.cell(row = i, column = 14).value) == "Recuperação de Prejuízo" or str(ws.cell(row = i, column = 14).value) == "Transferência para Prejuízo":
                     # ws.delete_rows(row[0].row)
                     ws.delete_rows(i, 1)
                     row_count += 1
             else:
                 i+=1 #increases the counter only if no row is deleted
                 
-        print("Deleted {} texto rows...".format(row_count))          
+        print("Deleted {} Prejuízo rows...".format(row_count))          
         print("Saving prepared file...")
         wb.save(riscoDet)
         
@@ -141,13 +140,13 @@ class SYS5:
         # opening the destination excel file 
         mainFile = mainPath
         main_wb = openpyxl.load_workbook(mainFile)
-        main_ws = main_wb["dados"] 
+        main_ws = main_wb["Analítico - Associados"] #Analiticos Associados
         
         # calculate total number of rows and columns in source excel file
         maxr = main_ws.max_row
         maxc = main_ws.max_column
         
-        print("Clearing dados...")
+        print("Clearing Analitico-Associados...")
         for i in range (2, maxr + 1):
             for j in range (1, maxc + 1):
                 # reading cell value from source excel file
@@ -155,9 +154,9 @@ class SYS5:
                 c.value = None
         
         #changing worksheet in main
-        main_ws = main_wb["Resumo"] 
+        main_ws = main_wb["Resumo - Prévia Risco"] #Resumo P - Prévia Risco sheet
         
-        print("Clearing Resumo...")
+        print("Clearing Resumo - Prévia Risco...")
         for i in range (2, maxr + 1):
             for j in range (1, maxc + 1):
                 # reading cell value from source excel file
@@ -189,13 +188,13 @@ class SYS5:
         # opening the destination excel file 
         mainFile = mainPath #TODO change path
         main_wb = openpyxl.load_workbook(mainFile)
-        main_ws = main_wb["dados"] #Analiticos Associados
+        main_ws = main_wb["Analítico - Associados"] #Analiticos Associados
         
         # calculate total number of rows and columns in source excel file
         maxr = arq_ws.max_row
         maxc = arq_ws.max_column
         
-        print("Copying from x to y...")
+        print("Copying from Arquivo.xlsx to teste_risco.xlsx...")
         # copying the cell values from source excel file to destination excel file
         for i in range (1, maxr + 10000):
             for j in range (1, maxc + 1):
@@ -210,9 +209,9 @@ class SYS5:
         maxc = det_ws.max_column
         
         #changing worksheet in main
-        main_ws = main_wb["Resumo "] #Resumo P - Prévia Risco sheet
+        main_ws = main_wb["Resumo - Prévia Risco"] #Resumo P - Prévia Risco sheet
         
-        print("Copying from w to y...")
+        print("Copying from provisoes...xlsx to bd_risco_previa.xlsx...")
         
         # copying the cell values from another source excel file to destination excel file
         for i in range (1, maxr + 10000):
@@ -238,9 +237,9 @@ class SYS5:
         """
         
         os.startfile(mainFile)
-        time.sleep(5)
+        time.sleep(15)
         pyautogui.hotkey('ctrl', 'b')
-        time.sleep(5)
+        time.sleep(15)
         os.system("TASKKILL /F /IM EXCEL.exe")
         time.sleep(5)
         
@@ -254,22 +253,25 @@ class SYS5:
          
         #opens the main workbook with the formulas
         main_wb = openpyxl.load_workbook(mainFile)
-        main_ws = main_wb["???"]
-        time.sleep(5)
+        time.sleep(15)
+        main_ws = main_wb["PRINCIPAIS MOTIVOS"]
+        time.sleep(10)
         
         #opens a copy of the main workbook that only shows raw data
         data_wb = openpyxl.load_workbook(mainFile, data_only = True)
-        data_ws = data_wb["???"]
-        time.sleep(5)
+        time.sleep(15)
+        data_ws = data_wb["PRINCIPAIS MOTIVOS"]
+        time.sleep(10)
         print("Opening data-only workbook...")
         
         #gets the current date and adjusts format
-        cd = SYS5._getCurrentDate() 
+        cd = Risco._getCurrentDate() 
         date = cd[:2] + "/" + cd[2:4] + "/" + cd[4:] 
         
         #stores the current date on the formula table
         c = main_ws.cell(row = 22, column = 3)
         c.value = date
+        time.sleep(1)
         
         #iterates through columns until it finds the one corresponding to the current date
 
@@ -294,7 +296,7 @@ class SYS5:
         main_row = 4
         main_col = col
         
-        print("Copying raw data to ???...")
+        print("Copying raw data to PRINCIPAIS MOTIVOS...")
         while (data_row < 38):
             data = data_ws.cell(row = data_row, column = data_col).value
             main_ws.cell(row = main_row, column = main_col).value = data
@@ -302,9 +304,10 @@ class SYS5:
             data_row += 1
             main_row += 1
         
+        time.sleep(5)
         main_wb.save(str(mainFile)) 
-               
-        print("Dados calculados") 
+        time.sleep(20)       
+        print("Indicadores por Motivo calculados") 
              
     def diffAgencia(mainFile:str):
         """
@@ -316,17 +319,19 @@ class SYS5:
         
         #opens the main workbook with the formulas
         main_wb = openpyxl.load_workbook(mainFile)
-        main_ws = main_wb["XXA"]
-        time.sleep(5)
+        time.sleep(15)
+        main_ws = main_wb["Acompanhamento"]
+        time.sleep(15)
         
         #opens a copy of the main workbook that only shows raw data
         data_wb = openpyxl.load_workbook(mainFile, data_only = True)
-        data_ws = data_wb["XXA"]
-        time.sleep(5)
+        time.sleep(15)
+        data_ws = data_wb["Acompanhamento"]
+        time.sleep(15)
         print("Opening data-only workbook...")
         
         #gets the current date and adjusts format
-        cd = SYS5._getCurrentDate() 
+        cd = Risco._getCurrentDate() 
         date = cd[:2] + "/" + cd[2:4] + "/" + cd[4:] 
         
         #stores the current date on the formula table and saves
@@ -357,7 +362,7 @@ class SYS5:
         main_col = col
         
         time.sleep(1)
-        print("Copying raw data to XXA...")
+        print("Copying raw data to Acompanhamento...")
         while (data_row < 57):
             data = data_ws.cell(row = data_row, column = data_col).value
             main_ws.cell(row = main_row, column = main_col).value = data
@@ -365,8 +370,10 @@ class SYS5:
             data_row += 1
             main_row += 1
         
+        time.sleep(5)
         main_wb.save(str(mainFile))
-        print("XXA calculados")
+        time.sleep(20)
+        print("Indicadores por Agencia calculados")
        
     def saveFiles(mainFile:str) -> None:
         """
@@ -377,19 +384,23 @@ class SYS5:
         """
         
         #gets the current date and adjusts format
-        cd = SYS5._getCurrentDate() 
+        cd = Risco._getCurrentDate() 
         
         #builds the two paths
-        bi_path = "C:/Users/ssada/dasdas.xlsx"
-        backup_path = "F:/dsdadas/dqdqweeq{}.xlsx".format(cd)
+        bi_path = "C:/PATH/Bweq_ewqq.xlsx"
+        backup_path = "C:/PATH//qwqqwAeq{}.xlsx".format(cd)
         
         #opens the main workbook and saves it to the BI folder
         main_wb = openpyxl.load_workbook(mainFile)
+        time.sleep(15)
         main_wb.save(bi_path)
         
+        time.sleep(15)
         #opens the main workbook and saves it to the backup folder
         main_wb = openpyxl.load_workbook(mainFile)
+        time.sleep(15)
         main_wb.save(backup_path)
+        time.sleep(10)
         
         print("Documentos salvos nas respectivas pastas. Encerrando programa.")
     

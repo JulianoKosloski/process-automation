@@ -1,8 +1,8 @@
-from mod.SYS1 import SYS1
-from mod.SYS2 import SYS2
-from mod.SYS4 import SYS4
-from mod.SYS5 import SYS5
-from mod.SYS3 import SYS3    
+from mod.ACClient import ACClient
+from mod.HGV import HGV
+from mod.OpenData import OpenData
+from mod.Risco import Risco
+from mod.BD_update_PBI import BD_update_PBI    
 from mod.SmartMail import SmartMail 
 
 import os
@@ -40,7 +40,7 @@ Use relative paths to call images, such as 'assets/image.png'
 
 pyinstaller requirements.py 
 
-2. Get the build and dist folders and copy them to a folder in F:/Folder/python_automations
+2. Get the build and dist folders and copy them to a folder in F:/Smart/python_automations
 
 3. Inside the dist folder, create a 'assets' folder with any images that are used
 

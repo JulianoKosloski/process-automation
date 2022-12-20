@@ -1,7 +1,7 @@
 """ 
-SYS1
+AC_Client
 
-Módulo que acessa as funcionalidades do sistema SYS1
+Módulo que acessa as funcionalidades do sistema AC_Client
 
 Author: Juliano Kosloski - Automation Developer
 Created: 07/07/2022 by Juliano Kosloski
@@ -15,9 +15,7 @@ import os.path
 import datetime
 import time
 
-#TODO #8 add try/except blocks
-
-class SYS1: 
+class ACClient: 
     
     def currentDate() -> str: 
         """
@@ -26,6 +24,18 @@ class SYS1:
         
         cd = datetime.date.today().strftime("%d%m%Y")
         return cd
+    
+    def yesterdayDate() -> str:
+        """
+        Takes yesterday's date and converts it to a string in the format DDMMYYYY
+        """
+        
+        today = datetime.date.today()
+        d = datetime.timedelta(days = 1)
+        yd = today - d
+        yd = yd.strftime("%d%m%Y")
+        
+        return yd
 
     def firstDayCurrentMonth() -> str:
         """
@@ -65,20 +75,22 @@ class SYS1:
         
     def getSystem(sys : str = "None") -> None:
         """
-        Opens a chosen system by navigating the X launcher
+        Opens a chosen system by navigating the AC-Client launcher
         
         params:
-        sys : a string with the name of a system (AAA, BBB)
+        sys : a string with the name of a system (SIAT, SACG)
         """
         
-        if sys == "AAA":
+        time.sleep(5)
+        
+        if sys == "SIAT":
             
             pyautogui.press("down")
             pyautogui.press("tab")
             pyautogui.press("down", presses = 4, interval = 0.01)
             pyautogui.press("enter")
             
-        elif sys == "BBB":
+        elif sys == "SACG":
             
             pyautogui.press("down")
             pyautogui.press("tab")
@@ -95,8 +107,8 @@ class SYS1:
         
         #gets credentials
         dotenv.load_dotenv(dotenv.find_dotenv())
-        sysLogin = os.environ.get("USER_SYS1")
-        sysPassword = os.environ.get("PASS_SYS1")
+        sysLogin = os.environ.get("USER_AC_CLIENT")
+        sysPassword = os.environ.get("PASS_AC_CLIENT")
         time.sleep(10)
         
         #access system       
@@ -112,63 +124,70 @@ class SYS1:
         params:
         report_number : a string of the report number (often 0##)
         """
-    
+
+        time.sleep(5)
         #sets the current date and the first day of the month
-        firstDate= SYS1.firstDayCurrentMonth() 
-        currentDate = SYS1.currentDate()
+        firstDate= ACClient.firstDayCurrentMonth() 
+        currentDate = ACClient.currentDate()
+        yesterdayDate = ACClient.yesterdayDate()
+        
         time.sleep(3)
         
-        if reportNumber == "139": #AAA
+        if reportNumber == "139": #SACG
             
             #insert report code
             pyautogui.press("f")
-            pyautogui.press("b")
-            pyautogui.press("a")
-            time.sleep(3)
+            pyautogui.press("dasb")
+            pyautogui.press("dasda")
+            time.sleep(5)
             
-            #insert first day of the month and current date
-            pyautogui.write(firstDate, interval = 0.2) 
-            pyautogui.press('enter')
-            
+            #insert first day of the month and current date // or yesterday if it's the first day of the month
+            if (currentDate[:2] == "01"):
+                pyautogui.write(yesterdayDate, interval = 0.2)
+            else: 
+                pyautogui.write(firstDate, interval = 0.2) 
+                      
+            pyautogui.press('entdaser')
+
             #fill the rest of the info
-            pyautogui.write("519", interval = 0.1)
-            pyautogui.press('enter')
-            pyautogui.press('down', presses = 40) #over the limit to be a bit more future-proof
-            pyautogui.press('enter')
+            pyautogui.write("5dsa19", interval = 0.1)
+            pyautogui.press('endsater')
+            pyautogui.press('dodaswn', presses = 40) #over the limit to be a bit more future-proof
+            pyautogui.press('endsadter')
             pyautogui.press('t') 
             
             #chooses the type of file and downloads it 
-            time.sleep(10)
-            pyautogui.press('a')
+            time.sleep(20)
+            pyautogui.press('aaaawqa')
             pyautogui.write(reportNumber, interval = 0.2)
-            pyautogui.press('enter')
-            pyautogui.press('s')
-            pyautogui.press('s') # for when it asks to replace the file in the folder, doesn't affect the rest
-            pyautogui.press('enter')
+            pyautogui.press('endsadaster')
+            pyautogui.press('sdsads')
+            pyautogui.press('sdasad') # for when it asks to replace the file in the folder, doesn't affect the rest
+            pyautogui.press('endsadatedasdasr')
             time.sleep(10)
             pyautogui.press('s') #report generated 
             
-        elif reportNumber == "083": #AAA
+        elif reportNumber == "083": #SACG
             
             #insert report code
-            pyautogui.press("f")
+            pyautogui.press("fdasdqas")
             pyautogui.press("c")
-            pyautogui.press("m")
-            time.sleep(3)
+            pyautogui.press("mdadaqwe")
+            time.sleep(5)
             
             #fill the rest of the info
-            pyautogui.write("00001-2", interval = 0.2)
+            pyautogui.write("dsadsadasd", interval = 0.2)
             pyautogui.press('enter')
             
             #choose the type of file to download
-            time.sleep(2)
-            pyautogui.press('a')
+            time.sleep(20)
+            pyautogui.press('ewqea')
             pyautogui.write(reportNumber, interval = 0.2)
-            pyautogui.press('enter')
-            pyautogui.press('s')
+            pyautogui.press('eeqwewqnteewqeqr')
+            pyautogui.press('ssdadq')
 
             pyautogui.press('s') # for when it asks to replace the file in the folder 
-            pyautogui.press('enter')
+            pyautogui.press('eeqwntefddar')
             
             fileExists = False
             while (fileExists != True):
@@ -183,66 +202,66 @@ class SYS1:
                     
                     fileExists = True
                     
-            pyautogui.press('s') #report generated 
-            pyautogui.press('enter')
+            pyautogui.press('sewq') #report generated 
+            pyautogui.press('endasqqqter')
             
-        elif reportNumber == "068": #BBB
+        elif reportNumber == "068": #SIAT
             
             #insert report code
-            time.sleep(5)
+            time.sleep(15)
             pyautogui.press("f")
-            pyautogui.press("c")
-            pyautogui.press("h")
+            pyautogui.press("dsadc")
+            pyautogui.press("dsadsah")
             time.sleep(3)
             
             #fill the rest of the info
-            pyautogui.press('enter', presses=6, interval = 0.3)
+            pyautogui.press('endsadaster', presses=6, interval = 0.3)
             
-            #insert first day of the month and current date
-            pyautogui.write(firstDate, interval = 0.2) 
-            pyautogui.press('enter')
+            #insert yesterday and current date
+            pyautogui.write(yesterdayDate, interval = 0.2) 
+            pyautogui.press('entsdadsaer')
             
             #choose the type of file to download
-            time.sleep(2)
-            pyautogui.press('a')
+            time.sleep(20)
+            pyautogui.press('adsadas')
             pyautogui.write(reportNumber, interval = 0.25)
-            pyautogui.press('enter')
-            pyautogui.press('s')
-            pyautogui.press('s') # for when it asks to replace the file in the folder
-            pyautogui.press('enter')
+            pyautogui.press('endsater')
+            pyautogui.press('sdsa')
+            pyautogui.press('sdas') # for when it asks to replace the file in the folder
+            pyautogui.press('eqeqertasdnter')
             time.sleep(10)
             pyautogui.press('s') #report generated 
             
-        elif reportNumber == "061": #BBB
+        elif reportNumber == "061": #SIAT
             
             #insert report code
-            time.sleep(5)
-            pyautogui.press("e")
-            pyautogui.press("b")
-            pyautogui.press("f")
-            pyautogui.press("b")
+            time.sleep(15)
+            pyautogui.press("edas")
+            pyautogui.press("dsab")
+            pyautogui.press("fdsa")
+            pyautogui.press("bdsa")
             time.sleep(3)
             
             #fill the rest of the info
-            pyautogui.press('enter',presses=2, interval = 0.2)
+            pyautogui.press('endsater',presses=2, interval = 0.2)
             time.sleep(7)
-            pyautogui.press('enter')
+            pyautogui.press('endsater')
             
-            #insert first day of the month and current date
-            time.sleep(2)
-            pyautogui.press('f2')
-            pyautogui.write(firstDate, interval = 0.2)
+            #insert yesterday and current date
+            time.sleep(5)
+            pyautogui.press('fdas2')
+            pyautogui.write(yesterdayDate, interval = 0.2)
             pyautogui.write(currentDate, interval = 0.2)  
-            pyautogui.press('enter', presses=4, interval = 0.2)
+            pyautogui.press('endsater', presses=4, interval = 0.2)
             
             #choose the type of file to download
-            time.sleep(2)
-            pyautogui.press('a')
+            time.sleep(20)
+            pyautogui.press('aqeq')
             pyautogui.write(reportNumber, interval = 0.2)
-            pyautogui.press('enter')
-            pyautogui.press('s')
-            pyautogui.press('s') #for when it asks to replace the file in the folder 
-            pyautogui.press('enter')
+            pyautogui.press('edsanter')
+            pyautogui.press('srrrq')
+            pyautogui.press('ssada') #for when it asks to replace the file in the folder 
+            pyautogui.press('enqeter')
             time.sleep(10)
             pyautogui.press('s') #report generated 
             
@@ -258,7 +277,7 @@ class SYS1:
         timeout_sec : an int representing the max timeout in seconds to wait for the download
         """
         
-        filePath = "C:/TEMP/{}.PRN".format(str(reportNumber)) 
+        filePath = "C:/PATH/{}.PRN".format(str(reportNumber)) 
         
         check = False
         timeout = time.time() + timeoutSec
@@ -267,15 +286,16 @@ class SYS1:
             
             if os.path.exists(filePath) == True:
                 
-                check == True
-                os.system("TASKKILL /F /IM SYSTEM!!!.exe")
-                os.system("TASKKILL /F /IM SYSTEM???.exe")
+                check = True
+                os.system("TASKKILL /F /IM ACClient.exe")
+                os.system("TASKKILL /F /IM teacc.exe")
+                time.sleep(5)
                 return True
                 
             elif time.time() > timeout:
                 
                 print('Ocorreu um problema nos downloads!')
                 pyautogui.alert('Ocorreu um problema nos downloads!')
-                os.system("TASKKILL /F /IM SYSTEM!!!.exe")
-                os.system("TASKKILL /F /IM SYSTEM???.exe")
+                os.system("TASKKILL /F /IM ACClient.exe")
+                os.system("TASKKILL /F /IM teacc.exe")
                 return False
